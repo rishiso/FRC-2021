@@ -109,7 +109,6 @@ public class Robot extends TimedRobot {
     speedFactor = .125 * speedFactor + .5;
 
     //Multiply inputs by value only if that specific input needs a different sensistivity
-    //Ex. Y input needs to be inverted
     m_drive.driveCartesian(speedFactor * m_stick.getX(), -speedFactor * m_stick.getY(), .8 * speedFactor * m_stick.getZ());
 
     //Controls pull up motor
