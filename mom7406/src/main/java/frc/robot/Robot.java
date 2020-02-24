@@ -102,20 +102,20 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     //Use throttle to adjust drive speed
-    //Ranges from 50% to 75% power
+    //Ranges from 25% to 50% power
     speedFactor = m_stick.getThrottle();
     speedFactor *= -1;
     speedFactor += 1;
-    speedFactor = .125 * speedFactor + .5;
+    speedFactor = .125 * speedFactor + .25;
 
     //Multiply inputs by value only if that specific input needs a different sensistivity
-    m_drive.driveCartesian(speedFactor * m_stick.getX(), -speedFactor * m_stick.getY(), .8 * speedFactor * m_stick.getZ());
+    m_drive.driveCartesian(speedFactor * m_stick.getX(), -speedFactor * m_stick.getY(), speedFactor * m_stick.getZ());
 
     //Controls pull up motor
     if (m_stick.getRawButton(RobotMap.PULL_UP)) {
-      m_lift.set(1);
+      m_lift.set(-.5);
     } else if (m_stick.getRawButton(RobotMap.PULL_DOWN)) {
-      m_lift.set(-1);
+      m_lift.set(.5);
     } else {
       m_lift.stopMotor();
     }
