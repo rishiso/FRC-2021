@@ -9,3 +9,4 @@
 - [ ] Implement thresholds in pull up mechanism using switch inputs
 - [ ] Program autonomous period
 - [ ] Adjust ideal controls based on drive team preferences
+- [ ] Program servo
