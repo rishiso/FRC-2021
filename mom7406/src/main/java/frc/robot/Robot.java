@@ -37,7 +37,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     //Runs once when robot boots
-
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
@@ -81,7 +80,6 @@ public class Robot extends TimedRobot {
    */
 
     m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
   }
 
@@ -122,12 +120,17 @@ public class Robot extends TimedRobot {
 
     //Controls lazy susan
     if (m_stick.getRawButton(RobotMap.SPIN_RIGHT)) {
-      m_wheel.set(1);
+      m_wheel.set(.5);
     } else if (m_stick.getRawButton(RobotMap.SPIN_LEFT)) {
-      m_wheel.set(-1);
+      m_wheel.set(-.5);
     } else {
       m_wheel.stopMotor();
     }
+
+    SmartDashboard.putNumber("Drive Power:", speedFactor);
+    SmartDashboard.putNumber("Joystick X:", m_stick.getX());
+    SmartDashboard.putNumber("Joystick Y:", -m_stick.getY());
+    SmartDashboard.putNumber("Joystick Z:", m_stick.getZ());
 
 
   }
