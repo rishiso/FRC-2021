@@ -17,8 +17,9 @@ public class Robot extends TimedRobot {
   //Initialize all vars that do not directly involve robot
 
   //Vars used in dashboard
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
+  private static final String defaultAuto = "Default";
+  private static final String autoTwo = "Option 2";
+  private static final String autoThree = "Option 3";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
@@ -37,9 +38,10 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     //Runs once when robot boots
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+    m_chooser.setDefaultOption("Default Auto", defaultAuto);
+    m_chooser.addOption("Auto 2", autoTwo);
+    m_chooser.addOption("Auto 3", autoThree);
+    SmartDashboard.putData("Auto choices:", m_chooser);
 
     leftFront = new VictorSP(RobotMap.DRIVE_FRONT_LEFT);
     rightFront = new VictorSP(RobotMap.DRIVE_FRONT_RIGHT);
@@ -80,16 +82,15 @@ public class Robot extends TimedRobot {
    */
 
     m_autoSelected = m_chooser.getSelected();
-    System.out.println("Auto selected: " + m_autoSelected);
   }
 
   @Override
   public void autonomousPeriodic() {
     switch (m_autoSelected) {
-      case kCustomAuto:
+      case defaultAuto:
         
         break;
-      case kDefaultAuto:
+      case autoTwo:
       default:
 
         break;
