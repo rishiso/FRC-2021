@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {  
   
+  //Dashboard vars
   private static final String defaultAuto = "Default";
   private static final String autoTwo = "Option 2";
   private static final String autoThree = "Option 3";
@@ -22,16 +23,20 @@ public class Robot extends TimedRobot {
   
   
   //Robot vars
-  private MecanumDrive m_drive;
-  private Auto m_auto;
-  private Joystick m_stick;
-  private SpeedController m_lift;
-  private SpeedController m_wheel;
-  private SpeedController leftFront;
-  private SpeedController rightFront;
-  private SpeedController leftBack;
-  private SpeedController rightBack;
-  private double speedFactor;
+  MecanumDrive m_drive;
+  Auto m_auto;
+
+  Joystick m_stick;
+
+  SpeedController m_lift;
+  SpeedController m_wheel;
+
+  SpeedController leftFront;
+  SpeedController rightFront;
+  SpeedController leftBack;
+  SpeedController rightBack;
+
+  double speedFactor;
 
   @Override
   public void robotInit() {
