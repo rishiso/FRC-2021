@@ -108,7 +108,7 @@ public class Robot extends TimedRobot {
     speedFactor = m_stick.getThrottle();
     speedFactor *= -1;
     speedFactor += 1;
-    speedFactor = .25 * speedFactor + .25;
+    speedFactor = .375 * speedFactor + .25;
 
     //Multiply inputs by value only if that specific input needs a different sensistivity
     m_drive.driveCartesian(speedFactor * m_stick.getX(), -speedFactor * m_stick.getY(), speedFactor * m_stick.getZ());
