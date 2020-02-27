@@ -7,24 +7,23 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard; 
 
-
-public class Robot extends TimedRobot {
-  //Initialize all vars that do not directly involve robot
-
-  //Vars used in dashboard
+public class Robot extends TimedRobot {  
+  
   private static final String defaultAuto = "Default";
   private static final String autoTwo = "Option 2";
   private static final String autoThree = "Option 3";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-
+  
+  
   //Robot vars
   private MecanumDrive m_drive;
+  private Auto m_auto;
   private Joystick m_stick;
   private SpeedController m_lift;
   private SpeedController m_wheel;
@@ -33,7 +32,6 @@ public class Robot extends TimedRobot {
   private SpeedController leftBack;
   private SpeedController rightBack;
   private double speedFactor;
-
 
   @Override
   public void robotInit() {
@@ -49,12 +47,15 @@ public class Robot extends TimedRobot {
     rightBack = new VictorSP(RobotMap.DRIVE_BACK_RIGHT);
 
     m_drive = new MecanumDrive(leftFront, leftBack, rightFront, rightBack);
+    m_auto = new Auto(leftFront, leftBack, rightFront, rightBack);
 
     m_stick = new Joystick(RobotMap.JOYSTICK);
 
     m_lift = new VictorSP(RobotMap.LIFT_MOTOR);
 
     m_wheel = new VictorSP(RobotMap.LAZY_SUSAN);
+
+
   
   }
 
@@ -88,11 +89,13 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     switch (m_autoSelected) {
       case defaultAuto:
-        
+        m_auto.forward(1);
         break;
       case autoTwo:
-      default:
-
+        m_auto.forward(2);
+        break;
+      case autoThree:
+        m_auto.forward(3);
         break;
     }
   }
@@ -101,11 +104,11 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     //Use throttle to adjust drive speed
-    //Ranges from 25% to 50% power
+    //Ranges from 25% to 100% power
     speedFactor = m_stick.getThrottle();
     speedFactor *= -1;
     speedFactor += 1;
-    speedFactor = .125 * speedFactor + .25;
+    speedFactor = .25 * speedFactor + .25;
 
     //Multiply inputs by value only if that specific input needs a different sensistivity
     m_drive.driveCartesian(speedFactor * m_stick.getX(), -speedFactor * m_stick.getY(), speedFactor * m_stick.getZ());
@@ -132,8 +135,6 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Joystick X:", m_stick.getX());
     SmartDashboard.putNumber("Joystick Y:", -m_stick.getY());
     SmartDashboard.putNumber("Joystick Z:", m_stick.getZ());
-
-
   }
 
   @Override
