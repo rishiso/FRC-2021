@@ -7,6 +7,6 @@
 
 ## Tasks
 - [ ] Implement thresholds in pull up mechanism using switch inputs
-- [ ] Program autonomous period
+- [x] Program autonomous period
 - [ ] Adjust ideal control settings based on drive team preferences
 - [ ] Program servo
