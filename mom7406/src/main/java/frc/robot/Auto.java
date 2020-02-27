@@ -1,19 +1,21 @@
 package frc.robot;
 
-import java.util.concurrent.TimeUnit;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 
 public class Auto extends MecanumDrive {
+
+    String action = "";
 
     public Auto(SpeedController frontLeftMotor, SpeedController rearLeftMotor, SpeedController frontRightMotor, SpeedController rearRightMotor) {
         super(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor);
     }
 
     public void forward(Integer secs) {
+        action = "FORWARD";
         driveCartesian(0, .5, 0);
         try {
-            TimeUnit.SECONDS.sleep(secs);
+            Thread.sleep(secs);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -21,9 +23,10 @@ public class Auto extends MecanumDrive {
     }
 
     public void right() {
+        action = "RIGHT";
         driveCartesian(0, 0, -.5);
         try {
-            TimeUnit.SECONDS.sleep(1);
+            Thread.sleep(1);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -31,13 +34,18 @@ public class Auto extends MecanumDrive {
 
     }
     public void left() {
+        action = "LEFT";
         driveCartesian(0, 0, .5);
         try {
-            TimeUnit.SECONDS.sleep(1);
+            Thread.sleep(1);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        stopMotor();
+    }
 
+    public void finished() {
+        action = "IDLE";
     }
 
 }
