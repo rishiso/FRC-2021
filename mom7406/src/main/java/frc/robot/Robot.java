@@ -51,9 +51,6 @@ public class Robot extends TimedRobot {
     leftBack = new VictorSP(RobotMap.DRIVE_BACK_LEFT);
     rightBack = new VictorSP(RobotMap.DRIVE_BACK_RIGHT);
 
-    m_drive = new MecanumDrive(leftFront, leftBack, rightFront, rightBack);
-    m_auto = new Auto(leftFront, leftBack, rightFront, rightBack);
-
     m_stick = new Joystick(RobotMap.JOYSTICK);
 
     m_lift = new VictorSP(RobotMap.LIFT_MOTOR);
@@ -75,34 +72,36 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-  /**
-   * This autonomous (along with the chooser code above) shows how to select
-   * between different autonomous modes using the dashboard. The sendable
-   * chooser code works with the Java SmartDashboard. If you prefer the
-   * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-   * getString line to get the auto name from the text box below the Gyro
-   *
-   * <p>You can add additional auto modes by adding additional comparisons to
-   * the switch structure below with additional strings. If using the
-   * SendableChooser make sure to add them to the chooser code above as well.
-   */
-
+    m_auto = new Auto(leftFront, leftBack, rightFront, rightBack);
+    m_auto.setSafetyEnabled(false);
     m_autoSelected = m_chooser.getSelected();
+    
+    switch (m_autoSelected) {
+      case defaultAuto:
+        m_auto.forward(5);
+        m_auto.left();
+        m_auto.finished();
+        break;
+      case autoTwo:
+        m_auto.forward(2);
+        m_auto.finished();
+        break;
+      case autoThree:
+        m_auto.forward(3);
+        m_auto.finished();
+        break;
+    }
   }
 
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case defaultAuto:
-        m_auto.forward(1);
-        break;
-      case autoTwo:
-        m_auto.forward(2);
-        break;
-      case autoThree:
-        m_auto.forward(3);
-        break;
-    }
+    SmartDashboard.putString("Autonomous Status:", m_auto.action);
+  }
+
+  @Override
+  public void teleopInit() {
+    m_drive = new MecanumDrive(leftFront, leftBack, rightFront, rightBack);
+    super.teleopInit();
   }
 
 
