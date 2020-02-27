@@ -8,8 +8,7 @@
 package frc.robot;
 
 
-//RobotMap is where you can store constants
-//Include ports, etc.
+//RobotMap is where you can store ports and mappings
 
 public final class RobotMap {
     //PWN mappings
