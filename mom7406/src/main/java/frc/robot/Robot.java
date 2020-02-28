@@ -8,7 +8,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard; 
 
@@ -18,13 +17,12 @@ public class Robot extends TimedRobot {
   private static final String defaultAuto = "Default";
   private static final String autoTwo = "Option 2";
   private static final String autoThree = "Option 3";
-  private String m_autoSelected;
+  private String m_driveSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   
   
   //Robot vars
-  MecanumDrive m_drive;
-  Auto m_auto;
+  MechDrive m_drive;
 
   Joystick m_stick;
 
@@ -51,14 +49,13 @@ public class Robot extends TimedRobot {
     leftBack = new VictorSP(RobotMap.DRIVE_BACK_LEFT);
     rightBack = new VictorSP(RobotMap.DRIVE_BACK_RIGHT);
 
+    m_drive = new MechDrive(leftFront, leftBack, rightFront, rightBack);
+
     m_stick = new Joystick(RobotMap.JOYSTICK);
 
     m_lift = new VictorSP(RobotMap.LIFT_MOTOR);
 
     m_wheel = new VictorSP(RobotMap.LAZY_SUSAN);
-
-
-  
   }
 
   @Override
@@ -72,38 +69,29 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_auto = new Auto(leftFront, leftBack, rightFront, rightBack);
-    m_auto.setSafetyEnabled(false);
-    m_autoSelected = m_chooser.getSelected();
+    m_driveSelected = m_chooser.getSelected();
     
-    switch (m_autoSelected) {
+    switch (m_driveSelected) {
       case defaultAuto:
-        m_auto.forward(5);
-        m_auto.left();
-        m_auto.finished();
+        m_drive.forward(5);
+        m_drive.left();
+        m_drive.finished();
         break;
       case autoTwo:
-        m_auto.forward(2);
-        m_auto.finished();
+        m_drive.forward(2);
+        m_drive.finished();
         break;
       case autoThree:
-        m_auto.forward(3);
-        m_auto.finished();
+        m_drive.forward(3);
+        m_drive.finished();
         break;
     }
   }
 
   @Override
   public void autonomousPeriodic() {
-    SmartDashboard.putString("Autonomous Status:", m_auto.action);
+    SmartDashboard.putString("Autonomous Status:", m_drive.action);
   }
-
-  @Override
-  public void teleopInit() {
-    m_drive = new MecanumDrive(leftFront, leftBack, rightFront, rightBack);
-    super.teleopInit();
-  }
-
 
   @Override
   public void teleopPeriodic() {
