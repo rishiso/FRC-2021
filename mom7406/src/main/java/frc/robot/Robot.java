@@ -34,6 +34,8 @@ public class Robot extends TimedRobot {
   SpeedController leftBack;
   SpeedController rightBack;
 
+  PullServo m_servo;
+
   double speedFactor;
 
   @Override
@@ -50,12 +52,15 @@ public class Robot extends TimedRobot {
     rightBack = new VictorSP(RobotMap.DRIVE_BACK_RIGHT);
 
     m_drive = new MechDrive(leftFront, leftBack, rightFront, rightBack);
+    m_drive.setSafetyEnabled(false);
 
     m_stick = new Joystick(RobotMap.JOYSTICK);
 
     m_lift = new VictorSP(RobotMap.LIFT_MOTOR);
 
     m_wheel = new VictorSP(RobotMap.LAZY_SUSAN);
+
+    m_servo = new PullServo(RobotMap.PULL_SERVO);
   }
 
   @Override
@@ -115,14 +120,18 @@ public class Robot extends TimedRobot {
     }
 
     //Controls lazy susan
-    if (m_stick.getRawButton(RobotMap.SPIN_RIGHT)) {
+    if (m_stick.getRawButton(RobotMap.SUSAN_RIGHT)) {
       m_wheel.set(.5);
-    } else if (m_stick.getRawButton(RobotMap.SPIN_LEFT)) {
+    } else if (m_stick.getRawButton(RobotMap.SUSAN_LEFT)) {
       m_wheel.set(-.5);
     } else {
       m_wheel.stopMotor();
     }
 
+    //Contols servo on pull mechanism
+    m_servo.Switch(m_stick.getRawButton(RobotMap.PULL_SERVO_BUTTON));
+
+    //Display data on SmartDashboard
     SmartDashboard.putNumber("Drive Power:", speedFactor);
     SmartDashboard.putNumber("Joystick X:", m_stick.getX());
     SmartDashboard.putNumber("Joystick Y:", -m_stick.getY());
