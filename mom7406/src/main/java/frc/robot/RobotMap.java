@@ -18,11 +18,13 @@ public final class RobotMap {
     public final static int DRIVE_BACK_RIGHT = 3;
     public final static int LIFT_MOTOR = 4;
     public final static int LAZY_SUSAN = 5;
+    public final static int PULL_SERVO = 6;
 
     //Joystick mappings
     public final static int JOYSTICK = 0;
     public final static int PULL_UP = 5;
     public final static int PULL_DOWN = 3;
-    public final static int SPIN_RIGHT = 4;
-    public final static int SPIN_LEFT = 6;
+    public final static int SUSAN_RIGHT = 4;
+    public final static int SUSAN_LEFT = 6;
+    public final static int PULL_SERVO_BUTTON = 7;
 }
