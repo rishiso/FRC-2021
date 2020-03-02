@@ -121,9 +121,9 @@ public class Robot extends TimedRobot {
 
     //Controls lazy susan
     if (m_stick.getRawButton(RobotMap.SUSAN_RIGHT)) {
-      m_wheel.set(.5);
+      m_wheel.set(1);
     } else if (m_stick.getRawButton(RobotMap.SUSAN_LEFT)) {
-      m_wheel.set(-.5);
+      m_wheel.set(-1);
     } else {
       m_wheel.stopMotor();
     }
