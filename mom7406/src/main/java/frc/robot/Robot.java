@@ -131,9 +131,6 @@ public class Robot extends TimedRobot {
       m_actuator.activate();
     }
 
-
-      
-
     //Display data on SmartDashboard
     SmartDashboard.putNumber("Drive Power:", speedFactor);
     SmartDashboard.putNumber("Joystick X:", m_stick.getX());
