@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard; 
 
@@ -22,7 +23,7 @@ public class Robot extends TimedRobot {
   
   
   //Robot vars
-  MechDrive m_drive;
+  MecanumDrive m_drive;
 
   Joystick m_stick;
 
@@ -34,7 +35,7 @@ public class Robot extends TimedRobot {
   SpeedController leftBack;
   SpeedController rightBack;
 
-  PullServo m_servo;
+  PullActuator m_actuator;
 
   double speedFactor;
 
@@ -51,8 +52,7 @@ public class Robot extends TimedRobot {
     leftBack = new VictorSP(RobotMap.DRIVE_BACK_LEFT);
     rightBack = new VictorSP(RobotMap.DRIVE_BACK_RIGHT);
 
-    m_drive = new MechDrive(leftFront, leftBack, rightFront, rightBack);
-    m_drive.setSafetyEnabled(false);
+    m_drive = new MecanumDrive(leftFront, leftBack, rightFront, rightBack);
 
     m_stick = new Joystick(RobotMap.JOYSTICK);
 
@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
 
     m_wheel = new VictorSP(RobotMap.LAZY_SUSAN);
 
-    m_servo = new PullServo(RobotMap.PULL_SERVO);
+    m_actuator = new PullActuator(RobotMap.PULL_ACTUATOR);
   }
 
   @Override
@@ -75,27 +75,21 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_driveSelected = m_chooser.getSelected();
-    
-    switch (m_driveSelected) {
-      case defaultAuto:
-        m_drive.forward(5);
-        m_drive.left();
-        m_drive.finished();
-        break;
-      case autoTwo:
-        m_drive.forward(2);
-        m_drive.finished();
-        break;
-      case autoThree:
-        m_drive.forward(3);
-        m_drive.finished();
-        break;
-    }
   }
 
   @Override
   public void autonomousPeriodic() {
-    SmartDashboard.putString("Autonomous Status:", m_drive.action);
+    switch (m_driveSelected) {
+      case defaultAuto:
+
+        break;
+      case autoTwo:
+
+        break;
+      case autoThree:
+
+        break;
+    }
   }
 
   @Override
@@ -121,21 +115,32 @@ public class Robot extends TimedRobot {
 
     //Controls lazy susan
     if (m_stick.getRawButton(RobotMap.SUSAN_RIGHT)) {
-      m_wheel.set(1);
+      m_wheel.set(.5);
     } else if (m_stick.getRawButton(RobotMap.SUSAN_LEFT)) {
-      m_wheel.set(-1);
+      m_wheel.set(-.5);
     } else {
       m_wheel.stopMotor();
     }
 
-    //Contols servo on pull mechanism
-    m_servo.Switch(m_stick.getRawButton(RobotMap.PULL_SERVO_BUTTON));
+    //Contols actuator on pull mechanism
+    if (m_stick.getRawButtonReleased(RobotMap.PULL_ACTUATOR_BUTTON)) {
+      m_actuator.switchMode();
+    }
+
+    if (m_stick.getRawButton(RobotMap.PULL_ACTUATOR_BUTTON)) {
+      m_actuator.activate();
+    }
+
+
+      
 
     //Display data on SmartDashboard
     SmartDashboard.putNumber("Drive Power:", speedFactor);
     SmartDashboard.putNumber("Joystick X:", m_stick.getX());
     SmartDashboard.putNumber("Joystick Y:", -m_stick.getY());
     SmartDashboard.putNumber("Joystick Z:", m_stick.getZ());
+    SmartDashboard.putString("Actuator Mode", m_actuator.mode);
+
   }
 
   @Override
