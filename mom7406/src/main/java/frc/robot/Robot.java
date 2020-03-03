@@ -129,6 +129,8 @@ public class Robot extends TimedRobot {
 
     if (m_stick.getRawButton(RobotMap.PULL_ACTUATOR_BUTTON)) {
       m_actuator.activate();
+    } else {
+      m_actuator.stop();
     }
 
     //Display data on SmartDashboard
