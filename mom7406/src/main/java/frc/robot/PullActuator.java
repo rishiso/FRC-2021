@@ -17,6 +17,10 @@ public class PullActuator extends Servo {
     public void close() {
         setSpeed(-1.0);
     }
+    
+    public void stop() {
+        setSpeed(0.0);
+    }
 
     public void switchMode() {
         if (mode == "CLOSE") {
