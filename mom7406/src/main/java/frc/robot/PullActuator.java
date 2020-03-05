@@ -1,9 +1,10 @@
 package frc.robot;
+
 import edu.wpi.first.wpilibj.Servo;
 
-public class PullActuator extends Servo {
 
-    String mode = "CLOSE";
+public class PullActuator extends Servo {
+    String mode = "";
     
     public PullActuator(Integer port) {
         super(port);
@@ -11,14 +12,17 @@ public class PullActuator extends Servo {
     }
 
     public void open() {
+        mode = "OPEN";
         setSpeed(1.0);
     }
 
     public void close() {
+        mode = "CLOSE";
         setSpeed(-1.0);
     }
 
     public void stop() {
+        mode = "IDLE";
         setSpeed(0);
     }
 
