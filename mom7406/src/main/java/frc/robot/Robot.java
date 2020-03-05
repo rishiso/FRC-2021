@@ -17,7 +17,6 @@ public class Robot extends TimedRobot {
   //Dashboard vars
   private static final String defaultAuto = "Default";
   private static final String autoTwo = "Option 2";
-  private static final String autoThree = "Option 3";
   private String m_driveSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   
@@ -44,7 +43,6 @@ public class Robot extends TimedRobot {
     //Runs once when robot boots
     m_chooser.setDefaultOption("Default Auto", defaultAuto);
     m_chooser.addOption("Auto 2", autoTwo);
-    m_chooser.addOption("Auto 3", autoThree);
     SmartDashboard.putData("Auto choices:", m_chooser);
 
     leftFront = new VictorSP(RobotMap.DRIVE_FRONT_LEFT);
@@ -86,9 +84,6 @@ public class Robot extends TimedRobot {
       case autoTwo:
 
         break;
-      case autoThree:
-
-        break;
     }
   }
 
@@ -123,23 +118,21 @@ public class Robot extends TimedRobot {
     }
 
     //Contols actuator on pull mechanism
-    if (m_stick.getRawButtonReleased(RobotMap.PULL_ACTUATOR_BUTTON)) {
-      m_actuator.switchMode();
-    }
-
-    if (m_stick.getRawButton(RobotMap.PULL_ACTUATOR_BUTTON)) {
-      m_actuator.activate();
+    if (m_stick.getRawButton(RobotMap.PULL_ACTUATOR_OPEN)) {
+      m_actuator.open();
+    } else if (m_stick.getRawButton(RobotMap.PULL_ACTUATOR_CLOSE)) {
+      m_actuator.close();
     } else {
       m_actuator.stop();
     }
 
     //Display data on SmartDashboard
     SmartDashboard.putNumber("Drive Power:", speedFactor);
-    SmartDashboard.putNumber("Joystick X:", m_stick.getX());
-    SmartDashboard.putNumber("Joystick Y:", -m_stick.getY());
-    SmartDashboard.putNumber("Joystick Z:", m_stick.getZ());
-    SmartDashboard.putString("Actuator Mode", m_actuator.mode);
-
+    SmartDashboard.putString("Actuator Status:", m_actuator.mode);
+    SmartDashboard.putNumber("Actuator Position:", m_actuator.getPosition());
+    SmartDashboard.putNumber("Joystick X:", speedFactor * m_stick.getX());
+    SmartDashboard.putNumber("Joystick Y:", -speedFactor * m_stick.getY());
+    SmartDashboard.putNumber("Joystick Z:", speedFactor * m_stick.getZ());
   }
 
   @Override
