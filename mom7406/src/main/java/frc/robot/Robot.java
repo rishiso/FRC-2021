@@ -10,13 +10,13 @@ package frc.robot;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard; 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {  
   
   //Dashboard vars
   private static final String defaultAuto = "Default";
-  private static final String autoTwo = "Option 2";
+  private static final String autoTwo = "Idle";
   private String m_driveSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   
@@ -28,21 +28,21 @@ public class Robot extends TimedRobot {
 
   SpeedController m_lift;
   SpeedController m_wheel;
+  PullActuator m_actuator;
 
   SpeedController leftFront;
   SpeedController rightFront;
   SpeedController leftBack;
   SpeedController rightBack;
 
-  PullActuator m_actuator;
-
   double speedFactor;
+  Timer tim;
 
   @Override
   public void robotInit() {
     //Runs once when robot boots
     m_chooser.setDefaultOption("Default Auto", defaultAuto);
-    m_chooser.addOption("Auto 2", autoTwo);
+    m_chooser.addOption("Idle Auto", autoTwo);
     SmartDashboard.putData("Auto choices:", m_chooser);
 
     leftFront = new VictorSP(RobotMap.DRIVE_FRONT_LEFT);
@@ -51,6 +51,7 @@ public class Robot extends TimedRobot {
     rightBack = new VictorSP(RobotMap.DRIVE_BACK_RIGHT);
 
     m_drive = new MecanumDrive(leftFront, leftBack, rightFront, rightBack);
+    m_drive.setSafetyEnabled(false);
 
     m_stick = new Joystick(RobotMap.JOYSTICK);
 
@@ -59,6 +60,8 @@ public class Robot extends TimedRobot {
     m_wheel = new VictorSP(RobotMap.LAZY_SUSAN);
 
     m_actuator = new PullActuator(RobotMap.PULL_ACTUATOR);
+
+    tim = new Timer();
   }
 
   @Override
@@ -73,18 +76,19 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_driveSelected = m_chooser.getSelected();
+    tim.start();
   }
 
   @Override
   public void autonomousPeriodic() {
-    switch (m_driveSelected) {
-      case defaultAuto:
-
-        break;
-      case autoTwo:
-
-        break;
+    if (m_driveSelected == defaultAuto) {
+      if (tim.get() <= 2.0) {
+        m_drive.driveCartesian(0, 0.1, 0);
+      } else {
+        m_drive.stopMotor();
+      }
     }
+    
   }
 
   @Override
@@ -96,8 +100,8 @@ public class Robot extends TimedRobot {
     speedFactor += 1;
     speedFactor = .375 * speedFactor + .25;
 
-    //Multiply inputs by value only if that specific input needs a different sensistivity
-    m_drive.driveCartesian(speedFactor * m_stick.getX(), -speedFactor * m_stick.getY(), speedFactor * m_stick.getZ());
+    //Speedfactor controls sensitivity
+    m_drive.driveCartesian(-speedFactor * m_stick.getX(), -speedFactor * m_stick.getY(), speedFactor * m_stick.getZ());
 
     //Controls pull up motor
     if (m_stick.getRawButton(RobotMap.PULL_UP)) {
@@ -129,8 +133,8 @@ public class Robot extends TimedRobot {
     //Display data on SmartDashboard
     SmartDashboard.putNumber("Drive Power:", speedFactor);
     SmartDashboard.putString("Actuator Status:", m_actuator.mode);
-    SmartDashboard.putNumber("Actuator Position:", m_actuator.getPosition());
-    SmartDashboard.putNumber("Joystick X:", speedFactor * m_stick.getX());
+    SmartDashboard.putNumber("Actuator Position:", m_actuator.get());
+    SmartDashboard.putNumber("Joystick X:", -speedFactor * m_stick.getX());
     SmartDashboard.putNumber("Joystick Y:", -speedFactor * m_stick.getY());
     SmartDashboard.putNumber("Joystick Z:", speedFactor * m_stick.getZ());
   }
