@@ -9,8 +9,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.*;
+import edu.wpi.first.networktables.*;
 
 public class Robot extends TimedRobot {  
   
@@ -37,6 +37,7 @@ public class Robot extends TimedRobot {
 
   double speedFactor;
   Timer tim;
+  NetworkTable limelight;
 
   @Override
   public void robotInit() {
@@ -62,6 +63,9 @@ public class Robot extends TimedRobot {
     m_actuator = new PullActuator(RobotMap.PULL_ACTUATOR);
 
     tim = new Timer();
+
+    limelight = NetworkTableInstance.getDefault().getTable("limelight");
+
   }
 
   @Override
@@ -82,13 +86,12 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     if (m_driveSelected == defaultAuto) {
-      if (tim.get() <= 2.0) {
-        m_drive.driveCartesian(0, 0.1, 0);
+      if (tim.get() <= 3.0) {
+        m_drive.driveCartesian(-0.25, 0, 0);
       } else {
         m_drive.stopMotor();
       }
     }
-    
   }
 
   @Override
@@ -99,6 +102,12 @@ public class Robot extends TimedRobot {
     speedFactor *= -1;
     speedFactor += 1;
     speedFactor = .375 * speedFactor + .25;
+    NetworkTableEntry tx = limelight.getEntry("tx");
+    NetworkTableEntry ty = limelight.getEntry("ty");
+    NetworkTableEntry ta = limelight.getEntry("ta");
+    double x = tx.getDouble(0.0);
+    double y = ty.getDouble(0.0);
+    double area = ta.getDouble(0.0);
 
     //Speedfactor controls sensitivity
     m_drive.driveCartesian(-speedFactor * m_stick.getX(), -speedFactor * m_stick.getY(), speedFactor * m_stick.getZ());
@@ -137,6 +146,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Joystick X:", -speedFactor * m_stick.getX());
     SmartDashboard.putNumber("Joystick Y:", -speedFactor * m_stick.getY());
     SmartDashboard.putNumber("Joystick Z:", speedFactor * m_stick.getZ());
+    SmartDashboard.putNumber("LimelightX", x);
+    SmartDashboard.putNumber("LimelightY", y);
+    SmartDashboard.putNumber("LimelightArea", area);
   }
 
   @Override
