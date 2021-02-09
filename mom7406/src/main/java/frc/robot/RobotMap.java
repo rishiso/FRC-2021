@@ -7,11 +7,10 @@
 
 package frc.robot;
 
-
 //RobotMap is where you can store ports and mappings
 
 public final class RobotMap {
-    //PWN mappings
+    //Rio mappings
     public final static int DRIVE_FRONT_LEFT = 0;
     public final static int DRIVE_FRONT_RIGHT = 1;
     public final static int DRIVE_BACK_LEFT = 2;
@@ -19,6 +18,7 @@ public final class RobotMap {
     public final static int LIFT_MOTOR = 4;
     public final static int LAZY_SUSAN = 5;
     public final static int PULL_ACTUATOR = 6;
+    public final static I2C.Port COLOR_SENSOR = I2C.Port.kOnboard; 
 
     //Joystick mappings
     public final static int JOYSTICK = 0;
