@@ -7,10 +7,16 @@
 
 package frc.robot;
 
+import javax.swing.Timer;
+
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
-import edu.wpi.first.wpilibj.smartdashboard.*;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.*;
+import com.revrobotics.*;
+import edu.wpi.first.wpilibj.util.Color;
+
 
 public class Robot extends TimedRobot {  
   
@@ -20,24 +26,25 @@ public class Robot extends TimedRobot {
   private String m_driveSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   
-  
   //Robot vars
-  MecanumDrive m_drive;
+  private MecanumDrive m_drive;
 
-  Joystick m_stick;
+  private Joystick m_stick;
 
-  SpeedController m_lift;
-  SpeedController m_wheel;
-  PullActuator m_actuator;
+  private SpeedController m_lift;
+  private SpeedController m_wheel;
+  private PullActuator m_actuator;
 
-  SpeedController leftFront;
-  SpeedController rightFront;
-  SpeedController leftBack;
-  SpeedController rightBack;
+  private SpeedController leftFront;
+  private SpeedController rightFront;
+  private SpeedController leftBack;
+  private SpeedController rightBack;
 
-  double speedFactor;
-  Timer tim;
-  NetworkTable limelight;
+  private double speedFactor;
+  private Timer tim;
+  private NetworkTable limelight;
+  private ColorSensorV3 m_colorSensor;
+  private ColorMatcher cMatcher;
 
   @Override
   public void robotInit() {
@@ -46,26 +53,28 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("Idle Auto", autoTwo);
     SmartDashboard.putData("Auto choices:", m_chooser);
 
-    leftFront = new VictorSP(RobotMap.DRIVE_FRONT_LEFT);
-    rightFront = new VictorSP(RobotMap.DRIVE_FRONT_RIGHT);
-    leftBack = new VictorSP(RobotMap.DRIVE_BACK_LEFT);
-    rightBack = new VictorSP(RobotMap.DRIVE_BACK_RIGHT);
+    leftFront = new VictorSP(DRIVE_FRONT_LEFT);
+    rightFront = new VictorSP(DRIVE_FRONT_RIGHT);
+    leftBack = new VictorSP(DRIVE_BACK_LEFT);
+    rightBack = new VictorSP(DRIVE_BACK_RIGHT);
 
     m_drive = new MecanumDrive(leftFront, leftBack, rightFront, rightBack);
-    m_drive.setSafetyEnabled(false);
 
-    m_stick = new Joystick(RobotMap.JOYSTICK);
+    m_stick = new Joystick(JOYSTICK);
 
-    m_lift = new VictorSP(RobotMap.LIFT_MOTOR);
+    m_lift = new VictorSP(LIFT_MOTOR);
 
-    m_wheel = new VictorSP(RobotMap.LAZY_SUSAN);
+    m_wheel = new VictorSP(LAZY_SUSAN);
 
-    m_actuator = new PullActuator(RobotMap.PULL_ACTUATOR);
+    m_actuator = new PullActuator(PULL_ACTUATOR);
 
     tim = new Timer();
 
     limelight = NetworkTableInstance.getDefault().getTable("limelight");
 
+    m_colorSensor = new ColorSensorV3(COLOR_SENSOR);
+    m_colorMatcher = new ColorMatcher();
+    m_colorMatcher.addColors();
   }
 
   @Override
@@ -80,14 +89,16 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_driveSelected = m_chooser.getSelected();
+    tim.restart();
     tim.start();
   }
 
   @Override
   public void autonomousPeriodic() {
+    //Drives forward for 3 seconds
     if (m_driveSelected == defaultAuto) {
       if (tim.get() <= 3.0) {
-        m_drive.driveCartesian(-0.25, 0, 0);
+        m_drive.driveCartesian(0, -.25, 0);
       } else {
         m_drive.stopMotor();
       }
@@ -102,38 +113,32 @@ public class Robot extends TimedRobot {
     speedFactor *= -1;
     speedFactor += 1;
     speedFactor = .375 * speedFactor + .25;
-    NetworkTableEntry tx = limelight.getEntry("tx");
-    NetworkTableEntry ty = limelight.getEntry("ty");
-    NetworkTableEntry ta = limelight.getEntry("ta");
-    double x = tx.getDouble(0.0);
-    double y = ty.getDouble(0.0);
-    double area = ta.getDouble(0.0);
 
     //Speedfactor controls sensitivity
     m_drive.driveCartesian(-speedFactor * m_stick.getX(), -speedFactor * m_stick.getY(), speedFactor * m_stick.getZ());
 
     //Controls pull up motor
-    if (m_stick.getRawButton(RobotMap.PULL_UP)) {
+    if (m_stick.getRawButton(PULL_UP)) {
       m_lift.set(-.5);
-    } else if (m_stick.getRawButton(RobotMap.PULL_DOWN)) {
+    } else if (m_stick.getRawButton(PULL_DOWN)) {
       m_lift.set(.5);
     } else {
       m_lift.stopMotor();
     }
 
     //Controls lazy susan
-    if (m_stick.getRawButton(RobotMap.SUSAN_RIGHT)) {
+    if (m_stick.getRawButton(SUSAN_RIGHT)) {
       m_wheel.set(.5);
-    } else if (m_stick.getRawButton(RobotMap.SUSAN_LEFT)) {
+    } else if (m_stick.getRawButton(SUSAN_LEFT)) {
       m_wheel.set(-.5);
     } else {
       m_wheel.stopMotor();
     }
 
     //Contols actuator on pull mechanism
-    if (m_stick.getRawButton(RobotMap.PULL_ACTUATOR_OPEN)) {
+    if (m_stick.getRawButton(PULL_ACTUATOR_OPEN)) {
       m_actuator.open();
-    } else if (m_stick.getRawButton(RobotMap.PULL_ACTUATOR_CLOSE)) {
+    } else if (m_stick.getRawButton(PULL_ACTUATOR_CLOSE)) {
       m_actuator.close();
     } else {
       m_actuator.stop();
@@ -146,9 +151,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Joystick X:", -speedFactor * m_stick.getX());
     SmartDashboard.putNumber("Joystick Y:", -speedFactor * m_stick.getY());
     SmartDashboard.putNumber("Joystick Z:", speedFactor * m_stick.getZ());
-    SmartDashboard.putNumber("LimelightX", x);
-    SmartDashboard.putNumber("LimelightY", y);
-    SmartDashboard.putNumber("LimelightArea", area);
+    SmartDashboard.putString("Detected Color:", cMatcher.matchColor(m_colorSensor.getColor()));
   }
 
   @Override
