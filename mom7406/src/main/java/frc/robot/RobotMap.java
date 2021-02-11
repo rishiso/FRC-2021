@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.I2C; 
+
 //RobotMap is where you can store ports and mappings
 
 public final class RobotMap {
