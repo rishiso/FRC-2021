@@ -7,8 +7,6 @@
 
 package frc.robot;
 
-import javax.swing.Timer;
-
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -16,7 +14,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.*;
 import com.revrobotics.*;
 import edu.wpi.first.wpilibj.util.Color;
-
 
 public class Robot extends TimedRobot {  
   
@@ -41,7 +38,6 @@ public class Robot extends TimedRobot {
   private SpeedController rightBack;
 
   private double speedFactor;
-  private Timer tim;
   private NetworkTable limelight;
   private ColorSensorV3 m_colorSensor;
   private ColorMatcher cMatcher;
@@ -53,28 +49,26 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("Idle Auto", autoTwo);
     SmartDashboard.putData("Auto choices:", m_chooser);
 
-    leftFront = new VictorSP(DRIVE_FRONT_LEFT);
-    rightFront = new VictorSP(DRIVE_FRONT_RIGHT);
-    leftBack = new VictorSP(DRIVE_BACK_LEFT);
-    rightBack = new VictorSP(DRIVE_BACK_RIGHT);
+    leftFront = new VictorSP(RobotMap.DRIVE_FRONT_LEFT);
+    rightFront = new VictorSP(RobotMap.DRIVE_FRONT_RIGHT);
+    leftBack = new VictorSP(RobotMap.DRIVE_BACK_LEFT);
+    rightBack = new VictorSP(RobotMap.DRIVE_BACK_RIGHT);
 
     m_drive = new MecanumDrive(leftFront, leftBack, rightFront, rightBack);
 
-    m_stick = new Joystick(JOYSTICK);
+    m_stick = new Joystick(RobotMap.JOYSTICK);
 
-    m_lift = new VictorSP(LIFT_MOTOR);
+    m_lift = new VictorSP(RobotMap.LIFT_MOTOR);
 
-    m_wheel = new VictorSP(LAZY_SUSAN);
+    m_wheel = new VictorSP(RobotMap.LAZY_SUSAN);
 
-    m_actuator = new PullActuator(PULL_ACTUATOR);
-
-    tim = new Timer();
+    m_actuator = new PullActuator(RobotMap.PULL_ACTUATOR);
 
     limelight = NetworkTableInstance.getDefault().getTable("limelight");
 
-    m_colorSensor = new ColorSensorV3(COLOR_SENSOR);
-    m_colorMatcher = new ColorMatcher();
-    m_colorMatcher.addColors();
+    m_colorSensor = new ColorSensorV3(RobotMap.COLOR_SENSOR);
+    cMatcher = new ColorMatcher();
+    cMatcher.addColors();
   }
 
   @Override
@@ -89,19 +83,13 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_driveSelected = m_chooser.getSelected();
-    tim.restart();
-    tim.start();
   }
 
   @Override
   public void autonomousPeriodic() {
     //Drives forward for 3 seconds
     if (m_driveSelected == defaultAuto) {
-      if (tim.get() <= 3.0) {
-        m_drive.driveCartesian(0, -.25, 0);
-      } else {
-        m_drive.stopMotor();
-      }
+      m_drive.driveCartesian(0, -.25, 0);
     }
   }
 
@@ -118,27 +106,27 @@ public class Robot extends TimedRobot {
     m_drive.driveCartesian(-speedFactor * m_stick.getX(), -speedFactor * m_stick.getY(), speedFactor * m_stick.getZ());
 
     //Controls pull up motor
-    if (m_stick.getRawButton(PULL_UP)) {
+    if (m_stick.getRawButton(RobotMap.PULL_UP)) {
       m_lift.set(-.5);
-    } else if (m_stick.getRawButton(PULL_DOWN)) {
+    } else if (m_stick.getRawButton(RobotMap.PULL_DOWN)) {
       m_lift.set(.5);
     } else {
       m_lift.stopMotor();
     }
 
     //Controls lazy susan
-    if (m_stick.getRawButton(SUSAN_RIGHT)) {
+    if (m_stick.getRawButton(RobotMap.SUSAN_RIGHT)) {
       m_wheel.set(.5);
-    } else if (m_stick.getRawButton(SUSAN_LEFT)) {
+    } else if (m_stick.getRawButton(RobotMap.SUSAN_LEFT)) {
       m_wheel.set(-.5);
     } else {
       m_wheel.stopMotor();
     }
 
     //Contols actuator on pull mechanism
-    if (m_stick.getRawButton(PULL_ACTUATOR_OPEN)) {
+    if (m_stick.getRawButton(RobotMap.PULL_ACTUATOR_OPEN)) {
       m_actuator.open();
-    } else if (m_stick.getRawButton(PULL_ACTUATOR_CLOSE)) {
+    } else if (m_stick.getRawButton(RobotMap.PULL_ACTUATOR_CLOSE)) {
       m_actuator.close();
     } else {
       m_actuator.stop();
