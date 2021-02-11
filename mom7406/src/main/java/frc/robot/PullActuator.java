@@ -8,22 +8,22 @@ public class PullActuator extends Servo {
     
     public PullActuator(Integer port) {
         super(port);
-        setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
+        super.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
     }
 
     public void open() {
         mode = "OPEN";
-        setSpeed(1.0);
+        super.setSpeed(1.0);
     }
 
     public void close() {
         mode = "CLOSE";
-        setSpeed(-1.0);
+        super.setSpeed(-1.0);
     }
 
     public void stop() {
         mode = "IDLE";
-        setSpeed(0);
+        super.stopMotor();
     }
 
 }
