@@ -11,9 +11,8 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.networktables.*;
+//import edu.wpi.first.networktables.*;
 import com.revrobotics.*;
-import edu.wpi.first.wpilibj.util.Color;
 
 public class Robot extends TimedRobot {  
   
@@ -38,7 +37,7 @@ public class Robot extends TimedRobot {
   private SpeedController rightBack;
 
   private double speedFactor;
-  private NetworkTable limelight;
+  //private NetworkTable limelight;
   private ColorSensorV3 m_colorSensor;
   private ColorMatcher cMatcher;
 
@@ -64,7 +63,7 @@ public class Robot extends TimedRobot {
 
     m_actuator = new PullActuator(RobotMap.PULL_ACTUATOR);
 
-    limelight = NetworkTableInstance.getDefault().getTable("limelight");
+    //limelight = NetworkTableInstance.getDefault().getTable("limelight");
 
     m_colorSensor = new ColorSensorV3(RobotMap.COLOR_SENSOR);
     cMatcher = new ColorMatcher();
@@ -139,7 +138,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Joystick X:", -speedFactor * m_stick.getX());
     SmartDashboard.putNumber("Joystick Y:", -speedFactor * m_stick.getY());
     SmartDashboard.putNumber("Joystick Z:", speedFactor * m_stick.getZ());
-    SmartDashboard.putString("Detected Color:", cMatcher.matchColor(m_colorSensor.getColor()));
+    SmartDashboard.putString("Detected Color:", cMatcher.colorCheck(m_colorSensor.getColor()));
   }
 
   @Override
