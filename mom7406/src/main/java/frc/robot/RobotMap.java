@@ -30,4 +30,5 @@ public final class RobotMap {
     public final static int SUSAN_LEFT = 6;
     public final static int PULL_ACTUATOR_OPEN = 11;
     public final static int PULL_ACTUATOR_CLOSE = 12;
+    public final static int AUTOMATIC_COLOR_SPIN = 2;
 }
