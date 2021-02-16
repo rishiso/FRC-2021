@@ -16,11 +16,19 @@ import com.revrobotics.*;
 
 public class Robot extends TimedRobot {  
   
-  //Dashboard vars
+  //Autonomous vars
   private static final String defaultAuto = "Default";
   private static final String autoTwo = "Idle";
   private String m_driveSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+
+  //Color Wheel control
+  private static final String red = "Blue";
+  private static final String blue = "Red";
+  private static final String yellow = "Green";
+  private static final String green = "Yellow";
+  private String colorSelected;
+  private final SendableChooser<String> colorChooser = new SendableChooser<>();
   
   //Robot vars
   private MecanumDrive m_drive;
@@ -47,6 +55,12 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", defaultAuto);
     m_chooser.addOption("Idle Auto", autoTwo);
     SmartDashboard.putData("Auto choices:", m_chooser);
+
+    m_chooser.setDefaultOption("Red", red);
+    m_chooser.addOption("Blue", blue);
+    m_chooser.addOption("Yellow", yellow);
+    m_chooser.addOption("Green", green);
+    SmartDashboard.putData("Color Choices:", colorChooser);
 
     leftFront = new VictorSP(RobotMap.DRIVE_FRONT_LEFT);
     rightFront = new VictorSP(RobotMap.DRIVE_FRONT_RIGHT);
@@ -118,6 +132,8 @@ public class Robot extends TimedRobot {
       m_wheel.set(.5);
     } else if (m_stick.getRawButton(RobotMap.SUSAN_LEFT)) {
       m_wheel.set(-.5);
+    } else if (m_stick.getRawButton(RobotMap.AUTOMATIC_COLOR_SPIN) && colorChooser.getSelected() != cMatcher.colorCheck(m_colorSensor.getColor())){
+      m_wheel.set(.5);
     } else {
       m_wheel.stopMotor();
     }
