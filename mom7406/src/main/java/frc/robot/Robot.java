@@ -17,10 +17,8 @@ import com.revrobotics.*;
 public class Robot extends TimedRobot {  
   
   //Autonomous vars
-  private static final String defaultAuto = "Default";
-  private static final String autoTwo = "Idle";
-  private String m_driveSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private int pathSelected;
+  private final SendableChooser<Integer> pathChooser = new SendableChooser<>();
 
   //Color Wheel control
   private static final String red = "Blue";
@@ -48,18 +46,21 @@ public class Robot extends TimedRobot {
   //private NetworkTable limelight;
   private ColorSensorV3 m_colorSensor;
   private ColorMatcher cMatcher;
+  private Timer tim;
 
   @Override
   public void robotInit() {
     //Runs once when robot boots
-    m_chooser.setDefaultOption("Default Auto", defaultAuto);
-    m_chooser.addOption("Idle Auto", autoTwo);
-    SmartDashboard.putData("Auto choices:", m_chooser);
+    pathChooser.setDefaultOption("Path 1", 1);
+    pathChooser.addOption("Path 2", 2);
+    pathChooser.addOption("Path 3", 3);
+    SmartDashboard.putData("Auto choices:", pathChooser);
+    tim = new Timer();
 
-    m_chooser.setDefaultOption("Red", red);
-    m_chooser.addOption("Blue", blue);
-    m_chooser.addOption("Yellow", yellow);
-    m_chooser.addOption("Green", green);
+    colorChooser.setDefaultOption("Red", red);
+    colorChooser.addOption("Blue", blue);
+    colorChooser.addOption("Yellow", yellow);
+    colorChooser.addOption("Green", green);
     SmartDashboard.putData("Color Choices:", colorChooser);
 
     leftFront = new VictorSP(RobotMap.DRIVE_FRONT_LEFT);
@@ -95,14 +96,23 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_driveSelected = m_chooser.getSelected();
+    pathSelected = pathChooser.getSelected();
+    tim.reset();
+    tim.start();
   }
 
   @Override
   public void autonomousPeriodic() {
     //Drives forward for 3 seconds
-    if (m_driveSelected == defaultAuto) {
-      m_drive.driveCartesian(0, -.25, 0);
+    double curTime = tim.get();
+    if (pathSelected == 1) {
+      if (curTime < 3) m_drive.driveCartesian(0, -.25, 0);
+      else if (curTime < 6) m_drive.driveCartesian(-.25, 0, 0);
+    } else if (pathSelected == 2) {
+      if (curTime < 3) m_drive.driveCartesian(0, -.4, 0);
+      else if (curTime < 6) m_drive.driveCartesian(-.4, 0, 0);
+    } else {
+      if (curTime < 3) m_drive.driveCartesian(0, 0, .25);
     }
   }
 
