@@ -25,7 +25,6 @@ public class Robot extends TimedRobot {
   private static final String blue = "Red";
   private static final String yellow = "Green";
   private static final String green = "Yellow";
-  private String colorSelected;
   private final SendableChooser<String> colorChooser = new SendableChooser<>();
   
   //Robot vars
@@ -105,13 +104,25 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     //Drives forward for 3 seconds
     double curTime = tim.get();
+
+    //Path 1
     if (pathSelected == 1) {
       if (curTime < 3) m_drive.driveCartesian(0, -.25, 0);
-      else if (curTime < 6) m_drive.driveCartesian(-.25, 0, 0);
-    } else if (pathSelected == 2) {
-      if (curTime < 3) m_drive.driveCartesian(0, -.4, 0);
-      else if (curTime < 6) m_drive.driveCartesian(-.4, 0, 0);
-    } else {
+      else if (curTime < 6) m_drive.driveCartesian(0, -.25, .3);
+    }
+
+    //Path 2
+    else if (pathSelected == 2) {
+      if (curTime < 1) m_drive.driveCartesian(0, -.3, 0);
+      else if (curTime < 3) m_drive.driveCartesian(0, 0, .25);
+      else if (curTime < 8) m_drive.driveCartesian(0, -.3, .2);
+      else if (curTime < 14) m_drive.driveCartesian(0, -.25, -.3);
+      else if (curTime < 19) m_drive.driveCartesian(0, -.3, .2);
+      else if (curTime < 21) m_drive.driveCartesian(0, -.25, -.1);
+    }
+
+    //Path 3
+    else {
       if (curTime < 3) m_drive.driveCartesian(0, 0, .25);
     }
   }
