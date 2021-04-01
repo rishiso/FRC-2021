@@ -107,10 +107,10 @@ public class Robot extends TimedRobot {
 
     //Path 1
     if (pathSelected == 1) {
-      if (curTime < 3) m_drive.driveCartesian(0, .25, 0);
-      else if (curTime < 6) m_drive.driveCartesian(0, .25, .3);
-      else if (curTime < 8) m_drive.driveCartesian(0, .25, 0);
-      else if (curTime < 11) m_drive.driveCartesian(0, .25, -.3);
+      if (curTime < 4.5) m_drive.driveCartesian(0, .25, 0);
+      else if (curTime < 10.5) m_drive.driveCartesian(0, .25, .5);
+      else if (curTime < 15) m_drive.driveCartesian(0, .25, 0);
+      else if (curTime < 19.5) m_drive.driveCartesian(0, .25, -.5);
       else if (curTime < 13) m_drive.driveCartesian(0, .25, 0);
       else if (curTime < 15) m_drive.driveCartesian(0, .25, -.2);
       else if (curTime < 18) m_drive.driveCartesian(0, .4, 0);
