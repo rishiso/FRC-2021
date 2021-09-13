@@ -10,14 +10,14 @@ public class ColorMatcher extends ColorMatch {
     static final Color kYellowTarget = makeColor(0.361, 0.524, 0.113);
 
     public void addColors() {
-        super.addColorMatch(kBlueTarget);
-        super.addColorMatch(kGreenTarget);
-        super.addColorMatch(kRedTarget);
-        super.addColorMatch(kYellowTarget);
+        addColorMatch(kBlueTarget);
+        addColorMatch(kGreenTarget);
+        addColorMatch(kRedTarget);
+        addColorMatch(kYellowTarget);
     }
 
     public String colorCheck(Color inputtedRGB) {
-        ColorMatchResult match = super.matchClosestColor(inputtedRGB);
+        ColorMatchResult match = matchClosestColor(inputtedRGB);
 
         if (match.color == kBlueTarget) {
             return("Blue");
